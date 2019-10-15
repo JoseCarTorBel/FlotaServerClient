@@ -37,7 +37,8 @@ public class ClienteFlotaSockets {
 	
 	/** Atributos de la partida guardados en el juego para simplificar su implementación */
 	private int quedan = NUMBARCOS, disparos = 0;
-
+	private String buenastardes = "funcionamierda";
+	//HOLA K ASE
 	/**
 	 * Programa principal. Crea y lanza un nuevo juego
 	 * @param args
