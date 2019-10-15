@@ -32,7 +32,7 @@ public class AuxiliarClienteFlota {
   		   System.out.println("Estableciendo conexión...");
   		   String message = mySocket
   		   
-  		   
+  		  
   		   
   	   }catch(Exception ex) {ex.printStackTrace();}
 	   

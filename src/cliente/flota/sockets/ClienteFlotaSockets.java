@@ -30,7 +30,7 @@ public class ClienteFlotaSockets {
 	 */
 
 	/** Parametros por defecto de una partida */
-	public static final int NUMFILAS=8, NUMCOLUMNAS=8, NUMBARCOS=6;
+	public static final int NUMFILAS=8, NUMCOLUMNAS=8, NUMBARCOS=6, AGUA=-1, TOCADO=-2, HUNDIDO=-3;
 
 	private GuiTablero guiTablero = null;			// El juego se encarga de crear y modificar la interfaz gráfica
 	private Partida partida = null;                 // Objeto con los datos de la partida en juego
@@ -139,7 +139,7 @@ public class ClienteFlotaSockets {
 			panelTablero.setLayout(new GridLayout(nf+1,nc+2));
 			buttons = new JButton[nf][nc];
 			panelTablero.add(new JLabel(""));
-			
+			ButtonListener escuchador = new ButtonListener();
 			for (int i=1;i<=nc;i++){
 				panelTablero.add(new JLabel(""+i));
 			}
@@ -148,7 +148,9 @@ public class ClienteFlotaSockets {
 				panelTablero.add(new JLabel(""+letras.charAt(i)));
 				for (int j=0;j<nc;j++){
 					buttons[i][j]=new JButton();
-					buttons[i][j].addActionListener(new ButtonListener(i,j));
+					buttons[i][j].putClientProperty(i, i);
+					buttons[i][j].putClientProperty(j, j);
+					buttons[i][j].addActionListener(escuchador);
 					panelTablero.add(buttons[i][j]);
 				}
 				panelTablero.add(new JLabel(""+letras.charAt(i)));
@@ -347,26 +349,27 @@ public class ClienteFlotaSockets {
 	 * de los componentes, apoyandose en los metodos putClientProperty y getClientProperty
 	 */
 	private class ButtonListener implements ActionListener {
-		private int i;
-		private int j;
-		public ButtonListener(int i, int j){
-			this.i=i;
-			this.j=j;
-		}
 
+		public ButtonListener(){
+			
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			JButton boton = (JButton) e.getSource();
+			int i = (int) boton.getClientProperty(i);
+			int j = (int) boton.getClientProperty(j);
 			if (!fin){
 				disparos++;
 				int id=partida.pruebaCasilla(i,j);
 				switch (id){
-					case -1:
+					case AGUA:
 						guiTablero.pintaCoord(i,j,Color.blue);
 						break;
-					case -2:
+					case TOCADO:
 						guiTablero.pintaCoord(i,j,Color.yellow);
 						break;
-					case -3:
+					case HUNDIDO:
 						break;
 					default:
 						guiTablero.pintaBarcoHundido(partida.getBarco(id));
