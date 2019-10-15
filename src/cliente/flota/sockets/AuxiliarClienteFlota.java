@@ -36,47 +36,7 @@ public class AuxiliarClienteFlota {
 	   
   	   try {
   		   mySocket =  new MyStreamSocket(InetAddress.getByName(hostName),Integer.parseInt(portNum));
-  		   System.out.println("Estableciendo conexión...");
-  		   String message = mySocket.receiveMessage();
-  		   
-<<<<<<< Updated upstream
-  		  
-  		   
-  	   }catch(Exception ex) {ex.printStackTrace();}
-=======
-  		   // Miramos que tipo de mensage se le envía para llamar a los métodos
-  		   if(message.length()==1) {
-  			   if(message.equals("0")) { fin();}
-  			   if(message.contentEquals("4")) {
-  				   String[] solucion= getSolucion();
-  				   mySocket.sendMessage(Integer.toString(solucion.length));
-  				   
-  				   for(int i = 0; i<solucion.length;i++) {
-  					   mySocket.sendMessage(solucion[i]);
-  				   }
-  			   }else{
-  				   
-  				   
-  				   String[] mensaje =  message.split("#");
-  				   
-  				   if(mensaje[0].equals("3")) {
-  					   String barco = getBarco(Integer.parseInt(mensaje[1]));
-  					   mySocket.sendMessage(barco);
-  				   }
-  				   int nf= Integer.parseInt(mensaje[1]);
-  				   int nc = Integer.parseInt(mensaje[2]);
-  				   
-  				   if(mensaje[0].equals("1")) {
-  					   int nb = Integer.parseInt(mensaje[3]);
-  					   nuevaPartida(nf,nc,nb);
-  				   }else if(mensaje[0].equals("2")) {
-  					   int casilla = pruebaCasilla(nf,nc);
-  					   mySocket.sendMessage(Integer.toString(casilla));
-  				   }
-  			   }
-  				   
-  		   }
-  		  
+  		   System.out.println("Estableciendo conexión...");  		   
   	   }catch(SocketException e) {
   		   System.out.println("ERROR: Error en la creación de socket");
   	   }catch(UnknownHostException e) {
@@ -84,8 +44,7 @@ public class AuxiliarClienteFlota {
   	   }catch(IOException e) {
   		   System.out.println("ERROR: Error en la comunicación");
   	   }
->>>>>>> Stashed changes
-	   
+
    } // end constructor
    
    /**
@@ -109,9 +68,11 @@ public class AuxiliarClienteFlota {
     * @throws IOException
     */
    public void nuevaPartida(int nf, int nc, int nb)  throws IOException {
-	   
-	   // Por implementar
-	   
+	   try {
+		   mySocket.sendMessage("1#"+nf+"#"+nc+"#"+nb);
+	   }catch(IOException e) {
+		   System.out.println("ERROR -> Error enviando mensaje "+e);
+	   } 
    } // end nuevaPartida
 
    /**
@@ -125,8 +86,10 @@ public class AuxiliarClienteFlota {
     */
    public int pruebaCasilla(int f, int c) throws IOException {
 	   
-	   // Por implementar
-	   return 0; // cambiar por el retorno correcto
+	   mySocket.sendMessage("2#"+f+"#"+c);
+	   int resultado= Integer.parseInt(mySocket.receiveMessage());
+	   
+	   return resultado;
 	   
     } // end pruebaCasilla
    
@@ -139,9 +102,14 @@ public class AuxiliarClienteFlota {
     * @throws IOException
     */
    public String getBarco(int idBarco) throws IOException {
-	   
-	   // Por implementar
-	   return null; // cambiar por el retorno correcto
+	   try {
+		   mySocket.sendMessage("3#"+idBarco);
+		   String barco = mySocket.receiveMessage();
+		   return barco; 
+	   }catch(IOException e) {
+		   System.out.println("ERROR. Conexión getBarco"+e);
+	   }
+	   return null;	//TODO Mirar que devolver en caso de exception
 	   
     } // end getBarco
    
@@ -153,10 +121,19 @@ public class AuxiliarClienteFlota {
     * @throws IOException
     */
    public String[] getSolucion() throws IOException {
-	   
-	   // Por implementar
-	   return null; // cambiar por el retorno correcto
-	   
+	   try {
+		   mySocket.sendMessage("4");
+		   int nBarcos = Integer.parseInt(mySocket.receiveMessage());
+		   String[] barcos = new String[nBarcos];
+		   
+		   for(int i=0;i<nBarcos;i++) {
+			   barcos[i]=mySocket.receiveMessage();
+		   }
+		   return barcos; // cambiar por el retorno correcto
+	   }catch(IOException e) {
+		   System.out.println("ERROR. Conexión solución "+e);
+	   }
+	   return null;	//TODO Mirar que devolver en caso de exception
     } // end getSolucion
    
 
