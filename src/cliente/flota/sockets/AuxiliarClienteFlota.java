@@ -27,7 +27,14 @@ public class AuxiliarClienteFlota {
                      String portNum) throws SocketException,
                      UnknownHostException, IOException {
 	   
-  	   // Por implementar	   
+  	   try {
+  		   MyStreamSocket mySocket =  new MyStreamSocket(InetAddress.getByName(hostName),Integer.parseInt(portNum));
+  		   System.out.println("Estableciendo conexión...");
+  		   String message = mySocket
+  		   
+  		   
+  		   
+  	   }catch(Exception ex) {ex.printStackTrace();}
 	   
    } // end constructor
    
