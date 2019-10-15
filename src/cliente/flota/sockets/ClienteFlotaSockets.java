@@ -6,13 +6,13 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.*;
-
+/*
 import partida.Partida;
 import tablero.Juego;
 import tablero.Juego.ButtonListener;
 import tablero.Juego.GuiTablero;
 import tablero.Juego.MenuListener;
-
+*/
 public class ClienteFlotaSockets {
 	
 	// Sustituye esta clase por tu versión de la clase Juego de la práctica 1
@@ -32,28 +32,30 @@ public class ClienteFlotaSockets {
 	/** Parametros por defecto de una partida */
 	public static final int NUMFILAS=8, NUMCOLUMNAS=8, NUMBARCOS=6, AGUA=-1, TOCADO=-2, HUNDIDO=-3;
 
-	private GuiTablero guiTablero = null;			// El juego se encarga de crear y modificar la interfaz gráfica
-	private Partida partida = null;                 // Objeto con los datos de la partida en juego
+	private GuiTablero guiTablero = null;			// El jug se encarga de crear y modificar la interfaz gráfica
+	private AuxiliarClienteFlota partida;                 // Objeto con los datos de la partida en juego
 	
 	/** Atributos de la partida guardados en el juego para simplificar su implementación */
 	private int quedan = NUMBARCOS, disparos = 0;
-	private String buenastardes = "funcionamierda";
-	//HOLA K ASE
+	
 	/**
 	 * Programa principal. Crea y lanza un nuevo juego
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
-		Juego juego = new Juego();
+	public static void main(String[] args) throws IOException {
+		ClienteFlotaSockets juego = new ClienteFlotaSockets();
 		juego.ejecuta();
 	} // end main
 
 	/**
 	 * Lanza una nueva hebra que crea la primera partida y dibuja la interfaz grafica: tablero
+	 * @throws IOException 
 	 */
-	private void ejecuta() {
+	private void ejecuta() throws IOException {
 		// Instancia la primera partida
-		partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+		partida = new AuxiliarClienteFlota("localhost","1004");
+		partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -148,8 +150,9 @@ public class ClienteFlotaSockets {
 				panelTablero.add(new JLabel(""+letras.charAt(i)));
 				for (int j=0;j<nc;j++){
 					buttons[i][j]=new JButton();
-					buttons[i][j].putClientProperty(i, i);
-					buttons[i][j].putClientProperty(j, j);
+					int[] coord= {i,j};	// Le añadimos la etiqueta al propio botón
+					buttons[i][j].putClientProperty(buttons[i][j],coord);
+					
 					buttons[i][j].addActionListener(escuchador);
 					panelTablero.add(buttons[i][j]);
 				}
@@ -181,11 +184,12 @@ public class ClienteFlotaSockets {
 
 		/**
 		 * Muestra la solucion de la partida y marca la partida como finalizada
+		 * @throws IOException 
 		 */
 		
 		
 		
-		public void muestraSolucion() {
+		public void muestraSolucion() throws IOException {
             String[] solucion = partida.getSolucion();
             int filaIni;
             int colIni;
@@ -309,7 +313,12 @@ public class ClienteFlotaSockets {
 	        
 			if(texto.equals("Mostrar solución")) {
 				fin=true;
-				guiTablero.muestraSolucion();
+				try {
+					guiTablero.muestraSolucion();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 			}
 			
@@ -320,7 +329,11 @@ public class ClienteFlotaSockets {
 				fin = false;
 				guiTablero.limpiaTablero();
 
-				partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+				try {
+					partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+				} catch (IOException e1) {
+					System.out.println("ERROR. Error creando nueva partida"+e);
+				}
 
 				disparos=0;
 				quedan = NUMBARCOS;
@@ -353,15 +366,21 @@ public class ClienteFlotaSockets {
 		public ButtonListener(){
 			
 		}
-		
+		//TODO Comprobar si es así
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton boton = (JButton) e.getSource();
-			int i = (int) boton.getClientProperty(i);
-			int j = (int) boton.getClientProperty(j);
+			int i = (int) boton.getClientProperty(e);
+			int j = (int) boton.getClientProperty(e);
 			if (!fin){
 				disparos++;
-				int id=partida.pruebaCasilla(i,j);
+				int id=0;
+				try {
+					id = partida.pruebaCasilla(i,j);
+				} catch (IOException e1) {
+					System.out.println("ERROR. Error probando casilla"+e1);
+					//return;
+				}
 				switch (id){
 					case AGUA:
 						guiTablero.pintaCoord(i,j,Color.blue);
@@ -372,7 +391,11 @@ public class ClienteFlotaSockets {
 					case HUNDIDO:
 						break;
 					default:
+					try {
 						guiTablero.pintaBarcoHundido(partida.getBarco(id));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 						break;
 
 				}
