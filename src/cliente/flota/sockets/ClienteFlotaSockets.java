@@ -150,9 +150,8 @@ public class ClienteFlotaSockets {
 				panelTablero.add(new JLabel(""+letras.charAt(i)));
 				for (int j=0;j<nc;j++){
 					buttons[i][j]=new JButton();
-					int[] coord= {i,j};	// Le añadimos la etiqueta al propio botón
-					buttons[i][j].putClientProperty(buttons[i][j],coord);
-					
+					int[] coordenadas = {i,j};	// Le añadimos la etiqueta al propio botón
+					buttons[i][j].putClientProperty("coord",coordenadas);
 					buttons[i][j].addActionListener(escuchador);
 					panelTablero.add(buttons[i][j]);
 				}
@@ -370,8 +369,9 @@ public class ClienteFlotaSockets {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton boton = (JButton) e.getSource();
-			int i = (int) boton.getClientProperty(e);
-			int j = (int) boton.getClientProperty(e);
+			int[] coordenada = (int[]) boton.getClientProperty("coord");
+			int i = coordenada[0];
+			int j = coordenada[1];
 			if (!fin){
 				disparos++;
 				int id=0;
