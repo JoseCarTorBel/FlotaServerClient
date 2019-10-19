@@ -25,16 +25,16 @@ public class ServidorFlotaSockets {
 	    try {
 	    	ServerSocket connectionSocket = new ServerSocket(1004);
 	    	System.out.println("Esperando a aceptar conexion");
-	    	MyStreamSocket dataSocket = new MyStreamSocket(connectionSocket.accept());
-	    	System.out.println("Conexion aceptada");
 	    	
-	    	// Creamos la partida paralela
-	    	partidaJugador = new Thread(new HiloServidorFlota(dataSocket));
-	    	partidaJugador.run();
-	    	
-	    	
-	    	//TODO Este join no se si está bien aquí. 
-	    	
+	    	//El servidor está en todo momento esperando una conexion
+	    	while(true) {
+	    		MyStreamSocket dataSocket = new MyStreamSocket(connectionSocket.accept());
+		    	System.out.println("Conexion aceptada");
+		    	
+		    	// Creamos la partida paralela
+		    	partidaJugador = new Thread(new HiloServidorFlota(dataSocket));
+		    	partidaJugador.start();
+	    	}
 	    }catch(Exception ex){ 
 	    	System.out.println("Error conexion servidor");
 	    	ex.printStackTrace();
