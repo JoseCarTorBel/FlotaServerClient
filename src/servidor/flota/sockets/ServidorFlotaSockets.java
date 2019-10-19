@@ -18,6 +18,8 @@ public class ServidorFlotaSockets {
 	   
 	  // Acepta conexiones vía socket de distintos clientes.
 	  // Por cada conexión establecida lanza una hebra de la clase HiloServidorFlota.
+	   
+	   // OJO: El servidor no se cierra nunca, siempre está escuchando
 	   	
 	   Thread partidaJugador;
 	    try {
@@ -32,10 +34,7 @@ public class ServidorFlotaSockets {
 	    	
 	    	
 	    	//TODO Este join no se si está bien aquí. 
-	    	// El programa principal se debe esperar que terminen todas las partidas para cerrar conexión
-	    	partidaJugador.join();
-		    
-	    	connectionSocket.close();
+	    	
 	    }catch(Exception ex){ 
 	    	System.out.println("Error conexion servidor");
 	    	ex.printStackTrace();
