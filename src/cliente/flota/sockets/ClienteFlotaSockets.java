@@ -134,6 +134,8 @@ public class ClienteFlotaSockets {
 		 * Cada casilla sera un boton con su correspondiente escuchador
 		 * @param nf	numero de filas
 		 * @param nc	numero de columnas
+		 * 
+		 * Se utiliza una fila y 2 columnas más para la poner los layers
 		 */
 
 		private void anyadeGrid(int nf, int nc) {
@@ -364,12 +366,15 @@ public class ClienteFlotaSockets {
 
 		public ButtonListener(){
 			
-		}
-		//TODO Comprobar si es así
+		} 
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton boton = (JButton) e.getSource();
 			int[] coordenada = (int[]) boton.getClientProperty("coord");
+			
+			// Las coordenadas vienen en un vector tal que [x,y]
+			
 			int i = coordenada[0];
 			int j = coordenada[1];
 			if (!fin){

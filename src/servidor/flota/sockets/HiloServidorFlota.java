@@ -24,7 +24,16 @@ class HiloServidorFlota implements Runnable {
 	 */
    HiloServidorFlota(MyStreamSocket myDataSocket) {
 	   
-      // Por implementar
+      try {
+		String mensaje = myDataSocket.receiveMessage();
+		
+		
+		
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+      
 	   
    }
  
@@ -46,7 +55,7 @@ class HiloServidorFlota implements Runnable {
             	 break;
 
              case 1: { // Crea nueva partida
-            	 // ...
+            	 
             	 break;
              }             
              case 2: { // Prueba una casilla y devuelve el resultado al cliente

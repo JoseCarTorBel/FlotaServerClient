@@ -14,10 +14,38 @@ import comun.flota.sockets.MyStreamSocket;
 
 public class ServidorFlotaSockets {
    
-   public static void main(String[] args) {
+   public static void main(String[] args) throws InterruptedException {
 	   
 	  // Acepta conexiones vía socket de distintos clientes.
 	  // Por cada conexión establecida lanza una hebra de la clase HiloServidorFlota.
+	   	
+	   Thread partidaJugador;
+	    try {
+	    	ServerSocket connectionSocket = new ServerSocket(1004);
+	    	System.out.println("Esperando a aceptar conexion");
+	    	MyStreamSocket dataSocket = new MyStreamSocket(connectionSocket.accept());
+	    	System.out.println("Conexion aceptada");
+	    	
+	    	// Creamos la partida paralela
+	    	partidaJugador = new Thread(new HiloServidorFlota(dataSocket));
+	    	partidaJugador.run();
+	    	
+	    	
+	    	//TODO Este join no se si está bien aquí. 
+	    	// El programa principal se debe esperar que terminen todas las partidas para cerrar conexión
+	    	partidaJugador.join();
+		    
+	    	connectionSocket.close();
+	    }catch(Exception ex){ 
+	    	System.out.println("Error conexion servidor");
+	    	ex.printStackTrace();
+	    	
+	    }
+	    
+	    
+	   
+	    
+	    
 	   
 
 	  // Revisad el apartado 5.5 del libro de Liu
