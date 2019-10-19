@@ -24,51 +24,83 @@ class HiloServidorFlota implements Runnable {
 	 */
    HiloServidorFlota(MyStreamSocket myDataSocket) {
 	   
-      try {
-		String mensaje = myDataSocket.receiveMessage();
-		
-		
-		
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	   this.myDataSocket=myDataSocket;
       
 	   
    }
  
    /**
 	* Gestiona una sesion con un cliente	
+	* 
+	* Opciones mensaje según se recibe:
+	* 
+	* final = "0"
+	 * nuevaPartida = "1#filas#cols#barco"
+	 * pruebaCasilla = "2#fila#col"
+	 * getBarco = "3#id"
+	 * getSol="4"
+	* 
    */
    public void run( ) {
       int operacion = 0;
       boolean done = false;
-      // ...
+      String message;
+      
       try {
          while (!done) {
         	 // Recibe una peticion del cliente
         	 // Extrae la operación y los argumentos
+        	 
+        	 message = myDataSocket.receiveMessage();
+        	 String[] datos = null;
+        	 if(message.length()==0) {
+        		 if(message.equals("4")) 
+        			 operacion=4;	// getSolucion
+        		 else
+        			 operacion=0;	//Fin partida
+        	 }else {	 
+        		 datos=message.split("#");
+        		 operacion=Integer.parseInt(datos[0]);
+        	 }
+        	 
+        	 int nf,nc,nb;	
                       
              switch (operacion) {
              case 0:  // fin de conexión con el cliente
-            	 // ...
-            	 break;
+            	myDataSocket.close();
+            	break;
 
              case 1: { // Crea nueva partida
-            	 
+            	 nf=Integer.parseInt(datos[1]);
+            	 nc=Integer.parseInt(datos[2]);
+            	 nb=Integer.parseInt(datos[3]);
+            	 partida = new Partida(nf,nc,nb);
             	 break;
              }             
              case 2: { // Prueba una casilla y devuelve el resultado al cliente
-            	 // ... 
+            	 nf=Integer.parseInt(datos[1]);
+            	 nc = Integer.parseInt(datos[2]);
+            	 
+            	 // Enviamos el resultado al cliente.
+            	 myDataSocket.sendMessage(Integer.toString(partida.pruebaCasilla(nf, nc)));
+            	 
                  break;
              }
              case 3: { // Obtiene los datos de un barco y se los devuelve al cliente
-            	 // ... 
+            	 int id = Integer.parseInt(datos[1]);
+            	 myDataSocket.sendMessage(partida.getBarco(id));
                  break;
              }
              case 4: { // Devuelve al cliente la solucion en forma de vector de cadenas
         	   // Primero envia el numero de barcos 
+            	 String[] barcos = partida.getSolucion();
+            	 myDataSocket.sendMessage(Integer.toString(barcos.length));
+            	 
                // Despues envia una cadena por cada barco
+            	 for(int barco =0; barco<barcos.length;barco++) {
+            		 myDataSocket.sendMessage(barcos[barco]);   		 
+            	 }
+            	 
                break;
              }
          } // fin switch
