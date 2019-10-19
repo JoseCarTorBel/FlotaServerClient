@@ -44,25 +44,16 @@ class HiloServidorFlota implements Runnable {
    public void run( ) {
       int operacion = 0;
       boolean done = false;
-      String message;
+      String[] message;
       
       try {
          while (!done) {
         	 // Recibe una peticion del cliente
         	 // Extrae la operación y los argumentos
         	 
-        	 message = myDataSocket.receiveMessage();
-        	 String[] datos = null;
-        	 if(message.length()==0) {
-        		 if(message.equals("4")) 
-        			 operacion=4;	// getSolucion
-        		 else
-        			 operacion=0;	//Fin partida
-        	 }else {	 
-        		 datos=message.split("#");
-        		 operacion=Integer.parseInt(datos[0]);
-        	 }
-        	 
+        	 message = myDataSocket.receiveMessage().split("#");
+        	 operacion=Integer.parseInt(message[0]);
+     
         	 int nf,nc,nb;	
                       
              switch (operacion) {
@@ -71,15 +62,15 @@ class HiloServidorFlota implements Runnable {
             	break;
 
              case 1: { // Crea nueva partida
-            	 nf=Integer.parseInt(datos[1]);
-            	 nc=Integer.parseInt(datos[2]);
-            	 nb=Integer.parseInt(datos[3]);
+            	 nf=Integer.parseInt(message[1]);
+            	 nc=Integer.parseInt(message[2]);
+            	 nb=Integer.parseInt(message[3]);
             	 partida = new Partida(nf,nc,nb);
             	 break;
              }             
              case 2: { // Prueba una casilla y devuelve el resultado al cliente
-            	 nf=Integer.parseInt(datos[1]);
-            	 nc = Integer.parseInt(datos[2]);
+            	 nf=Integer.parseInt(message[1]);
+            	 nc = Integer.parseInt(message[2]);
             	 
             	 // Enviamos el resultado al cliente.
             	 myDataSocket.sendMessage(Integer.toString(partida.pruebaCasilla(nf, nc)));
@@ -87,7 +78,7 @@ class HiloServidorFlota implements Runnable {
                  break;
              }
              case 3: { // Obtiene los datos de un barco y se los devuelve al cliente
-            	 int id = Integer.parseInt(datos[1]);
+            	 int id = Integer.parseInt(message[1]);
             	 myDataSocket.sendMessage(partida.getBarco(id));
                  break;
              }
