@@ -74,7 +74,6 @@ class HiloServidorFlota implements Runnable {
             	 
             	 // Enviamos el resultado al cliente.	"2#fila#col"
             	 myDataSocket.sendMessage(Integer.toString(partida.pruebaCasilla(nf, nc)));
-            	 
                  break;
              }
              case 3: { // Obtiene los datos de un barco y se los devuelve al cliente	"3#id"
@@ -91,8 +90,7 @@ class HiloServidorFlota implements Runnable {
             	 for(int barco =0; barco<barcos.length;barco++) {
             		 myDataSocket.sendMessage(barcos[barco]);   		 
             	 }
-            	 
-               break;
+                 break;
              }
          } // fin switch
        } // fin while   
