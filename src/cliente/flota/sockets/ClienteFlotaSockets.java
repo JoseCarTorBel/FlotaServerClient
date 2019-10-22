@@ -54,7 +54,7 @@ public class ClienteFlotaSockets {
 	 */
 	private void ejecuta() throws IOException {
 		// Instancia la primera partida
-		partida = new AuxiliarClienteFlota("localhost","1004");
+		partida = new AuxiliarClienteFlota("localhost","1025");
 		partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -187,9 +187,7 @@ public class ClienteFlotaSockets {
 		 * Muestra la solucion de la partida y marca la partida como finalizada
 		 * @throws IOException 
 		 */
-		
-		
-		
+	
 		public void muestraSolucion() throws IOException {
             String[] solucion = partida.getSolucion();
             int filaIni;

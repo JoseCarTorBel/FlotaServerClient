@@ -23,7 +23,7 @@ public class ServidorFlotaSockets {
 	   	
 	   Thread partidaJugador;
 	    try {
-	    	ServerSocket connectionSocket = new ServerSocket(1004);
+	    	ServerSocket connectionSocket = new ServerSocket(1025);
 	    	System.out.println("Esperando a aceptar conexion");
 	    	
 	    	//El servidor está en todo momento esperando una conexion
@@ -36,16 +36,10 @@ public class ServidorFlotaSockets {
 		    	partidaJugador.start();
 	    	}
 	    }catch(Exception ex){ 
-	    	System.out.println("Error conexion servidor");
+	    	System.out.println("ERROR. Error conexion servidor");
 	    	ex.printStackTrace();
 	    	
 	    }
-	    
-	    
-	   
-	    
-	    
-	   
 
 	  // Revisad el apartado 5.5 del libro de Liu
  

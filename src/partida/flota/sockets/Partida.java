@@ -60,8 +60,8 @@ public class Partida {
 	    	Barco atacado = barcos.get(mar[f][c]);
 	    	atacado.tocaBarco();
 	    	if (!atacado.estaHundido()) {
-	    		mar[f][c]=-2;
-	    		return -2;
+	    		mar[f][c]=-TOCADO;
+	    		return TOCADO;
 	    	}	
 	    	int x=atacado.getColumnaInicial();
 	    	int y=atacado.getFilaInicial();
@@ -77,10 +77,10 @@ public class Partida {
     	
     	if (esHorizontal)
 			for (int i=0;i<tamanyo;i++)
-				mar[y][x+i]=-3;
+				mar[y][x+i]=HUNDIDO;
 		else
 			for (int i=0;i<tamanyo;i++) {
-				mar[y+i][x]=-3;
+				mar[y+i][x]=HUNDIDO;
 			}
 	}
 
@@ -105,9 +105,7 @@ public class Partida {
 		for(int i =0; i<vBarco.length;i++) {
 			barco=getBarco(i);
 			vBarco[i]=barco;		
-		}
-		
-		
+		}	
 		return vBarco;
 	}
     

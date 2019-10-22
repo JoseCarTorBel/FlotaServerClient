@@ -34,7 +34,7 @@ class HiloServidorFlota implements Runnable {
 	* 
 	* Opciones mensaje según se recibe:
 	* 
-	* final = "0"
+	*  final = "0"
 	 * nuevaPartida = "1#filas#cols#barco"
 	 * pruebaCasilla = "2#fila#col"
 	 * getBarco = "3#id"
@@ -61,7 +61,7 @@ class HiloServidorFlota implements Runnable {
             	myDataSocket.close();
             	break;
 
-             case 1: { // Crea nueva partida
+             case 1: { // Crea nueva partida	"1#filas#cols#barco"
             	 nf=Integer.parseInt(message[1]);
             	 nc=Integer.parseInt(message[2]);
             	 nb=Integer.parseInt(message[3]);
@@ -72,17 +72,17 @@ class HiloServidorFlota implements Runnable {
             	 nf=Integer.parseInt(message[1]);
             	 nc = Integer.parseInt(message[2]);
             	 
-            	 // Enviamos el resultado al cliente.
+            	 // Enviamos el resultado al cliente.	"2#fila#col"
             	 myDataSocket.sendMessage(Integer.toString(partida.pruebaCasilla(nf, nc)));
             	 
                  break;
              }
-             case 3: { // Obtiene los datos de un barco y se los devuelve al cliente
+             case 3: { // Obtiene los datos de un barco y se los devuelve al cliente	"3#id"
             	 int id = Integer.parseInt(message[1]);
             	 myDataSocket.sendMessage(partida.getBarco(id));
                  break;
              }
-             case 4: { // Devuelve al cliente la solucion en forma de vector de cadenas
+             case 4: { // Devuelve al cliente la solucion en forma de vector de cadenas	   getSol="4"
         	   // Primero envia el numero de barcos 
             	 String[] barcos = partida.getSolucion();
             	 myDataSocket.sendMessage(Integer.toString(barcos.length));
@@ -97,6 +97,8 @@ class HiloServidorFlota implements Runnable {
          } // fin switch
        } // fin while   
      } // fin try
+      
+      //TODO Porqué lanza esta excepción
      catch (Exception ex) {
         System.out.println("Exception caught in thread: " + ex);
      } // fin catch
