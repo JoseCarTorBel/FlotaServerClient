@@ -16,6 +16,8 @@ import comun.flota.sockets.MyStreamSocket;
 
 class HiloServidorFlota implements Runnable {
    MyStreamSocket myDataSocket;
+   
+   public static final int FIN=0, NUEVA_PARTIDA=1, PROBAR_CASILLA=2, OBTENER_BARCO=3,SOLUCION=4;
    private Partida partida = null;
 
 	/**
@@ -57,18 +59,19 @@ class HiloServidorFlota implements Runnable {
         	 int nf,nc,nb;	
                       
              switch (operacion) {
-             case 0:  // fin de conexión con el cliente
+             case FIN:  // fin de conexión con el cliente
             	myDataSocket.close();
+            	done = true;
             	break;
 
-             case 1: { // Crea nueva partida	"1#filas#cols#barco"
+             case NUEVA_PARTIDA: { // Crea nueva partida	"1#filas#cols#barco"
             	 nf=Integer.parseInt(message[1]);
             	 nc=Integer.parseInt(message[2]);
             	 nb=Integer.parseInt(message[3]);
             	 partida = new Partida(nf,nc,nb);
             	 break;
              }             
-             case 2: { // Prueba una casilla y devuelve el resultado al cliente
+             case PROBAR_CASILLA: { // Prueba una casilla y devuelve el resultado al cliente
             	 nf=Integer.parseInt(message[1]);
             	 nc = Integer.parseInt(message[2]);
             	 
@@ -76,12 +79,12 @@ class HiloServidorFlota implements Runnable {
             	 myDataSocket.sendMessage(Integer.toString(partida.pruebaCasilla(nf, nc)));
                  break;
              }
-             case 3: { // Obtiene los datos de un barco y se los devuelve al cliente	"3#id"
+             case OBTENER_BARCO: { // Obtiene los datos de un barco y se los devuelve al cliente	"3#id"
             	 int id = Integer.parseInt(message[1]);
             	 myDataSocket.sendMessage(partida.getBarco(id));
                  break;
              }
-             case 4: { // Devuelve al cliente la solucion en forma de vector de cadenas	   getSol="4"
+             case SOLUCION: { // Devuelve al cliente la solucion en forma de vector de cadenas	   getSol="4"
         	   // Primero envia el numero de barcos 
             	 String[] barcos = partida.getSolucion();
             	 myDataSocket.sendMessage(Integer.toString(barcos.length));
@@ -96,9 +99,10 @@ class HiloServidorFlota implements Runnable {
        } // fin while   
      } // fin try
       
-      //TODO Porqué lanza esta excepción
+      
      catch (Exception ex) {
-        System.out.println("Exception caught in thread: " + ex);
+        System.out.println("Exception caught in thread: "+ex);
+        ex.printStackTrace();
      } // fin catch
    } //fin run
    

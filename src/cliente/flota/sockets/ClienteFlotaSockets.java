@@ -81,8 +81,6 @@ public class ClienteFlotaSockets {
 		
 		private JMenuItem muestraSol,nuevaPartida,salir;
 
-		private String letras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-
 		private JPanel panelTablero;
 		/**
          * Constructor de una tablero dadas sus dimensiones
@@ -139,17 +137,18 @@ public class ClienteFlotaSockets {
 		 */
 
 		private void anyadeGrid(int nf, int nc) {
+			char letras = 'A';
 			panelTablero = new JPanel();
 			panelTablero.setLayout(new GridLayout(nf+1,nc+2));
 			buttons = new JButton[nf][nc];
 			panelTablero.add(new JLabel(""));
 			ButtonListener escuchador = new ButtonListener();
 			for (int i=1;i<=nc;i++){
-				panelTablero.add(new JLabel(""+i));
+				panelTablero.add(new JLabel(""+i,SwingConstants.CENTER));
 			}
 			panelTablero.add(new JLabel(""));
 			for (int i=0;i<nf;i++){
-				panelTablero.add(new JLabel(""+letras.charAt(i)));
+				panelTablero.add(new JLabel(""+letras,SwingConstants.CENTER));
 				for (int j=0;j<nc;j++){
 					buttons[i][j]=new JButton();
 					int[] coordenadas = {i,j};	// Le añadimos la etiqueta al propio botón
@@ -157,7 +156,7 @@ public class ClienteFlotaSockets {
 					buttons[i][j].addActionListener(escuchador);
 					panelTablero.add(buttons[i][j]);
 				}
-				panelTablero.add(new JLabel(""+letras.charAt(i)));
+				panelTablero.add(new JLabel(""+letras++,SwingConstants.CENTER));
 			}
 			frame.add(panelTablero,BorderLayout.CENTER);
 		} // end anyadeGrid
@@ -341,8 +340,13 @@ public class ClienteFlotaSockets {
 			
 			if(texto.equals("Salir")) {
 				System.out.println("Salimos");
-				guiTablero.liberaRecursos();
-
+				try {
+					partida.fin();
+					guiTablero.liberaRecursos();
+				}
+				catch (IOException ex) {
+					System.out.println("No se pué");
+				}
 
 			}
 	

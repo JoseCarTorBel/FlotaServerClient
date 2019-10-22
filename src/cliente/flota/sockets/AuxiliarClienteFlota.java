@@ -54,6 +54,7 @@ public class AuxiliarClienteFlota {
 	 */
    public void fin( ) throws IOException {
 	   try {
+		   mySocket.sendMessage("0");
 		   mySocket.close();
 	   }catch(Exception ex) {System.out.println("ERROR: No se puede cerrar la conexión");}
 	   
