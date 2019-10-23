@@ -33,9 +33,11 @@ public class AuxiliarClienteFlota {
    AuxiliarClienteFlota(String hostName,
                      String portNum) throws SocketException,
                      UnknownHostException, IOException {
+	   serverHost = InetAddress.getByName(hostName);
+	   serverPort = Integer.parseInt(portNum);
 	   
   	   try {
-  		   mySocket =  new MyStreamSocket(InetAddress.getByName(hostName),Integer.parseInt(portNum));
+  		   mySocket =  new MyStreamSocket(serverHost,serverPort);
   		   System.out.println("Estableciendo conexión...");  		   
   	   }catch(SocketException e) {
   		   System.out.println("ERROR: Error en la creación de socket");
